@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
-Route::view('/admin/login', 'admin.login')->name('admin.login');
+Route::livewire('/admin/login', 'pages::admin.login')->name('admin.login');
 
 Route::post('/admin/logout', function (Request $request, AdminAccess $adminAccess): RedirectResponse {
     $adminAccess->logout($request);
