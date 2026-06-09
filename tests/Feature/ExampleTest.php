@@ -5,5 +5,5 @@ test('returns a successful response', function () {
 
     $response
         ->assertOk()
-        ->assertSeeText('Private links');
+        ->assertSeeText('No links here yet.');
 });

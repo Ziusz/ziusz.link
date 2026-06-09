@@ -33,6 +33,13 @@ class Link extends Model
         return 'slug';
     }
 
+    public function destinationHost(): string
+    {
+        $host = parse_url($this->destination_url, PHP_URL_HOST);
+
+        return is_string($host) && $host !== '' ? $host : $this->destination_url;
+    }
+
     /**
      * Get the attributes that should be cast.
      *
