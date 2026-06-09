@@ -8,11 +8,15 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => null,
+            'provider' => 'null',
         ],
     ],
 
-    'providers' => [],
+    'providers' => [
+        'null' => [
+            'driver' => 'null',
+        ],
+    ],
 
     'passwords' => [],
 
