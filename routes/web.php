@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LinkRedirectController;
 use App\Support\AdminAccess;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,3 +19,5 @@ Route::post('/admin/logout', function (Request $request, AdminAccess $adminAcces
 Route::middleware('admin')->group(function (): void {
     Route::view('/admin', 'admin.dashboard')->name('admin.dashboard');
 });
+
+Route::get('/{link:slug}', LinkRedirectController::class)->name('links.redirect');

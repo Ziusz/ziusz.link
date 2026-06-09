@@ -28,6 +28,11 @@ class Link extends Model
         'clicks_count' => 0,
     ];
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     /**
      * Get the attributes that should be cast.
      *
