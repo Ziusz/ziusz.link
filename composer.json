@@ -1,11 +1,13 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/livewire-starter-kit",
+    "name": "ziusz/ziusz-link",
     "type": "project",
-    "description": "The official Laravel starter kit for Livewire.",
+    "description": "Private link shortener and link listing.",
     "keywords": [
         "laravel",
-        "framework"
+        "link-shortener",
+        "link-list",
+        "link-listing"
     ],
     "license": "MIT",
     "require": {
