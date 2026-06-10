@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\LinkVisibility;
 use App\Link;
+use App\Platform;
 use Database\Seeders\LinkSeeder;
 
 test('home lists active and listed links in sort order', function () {
@@ -62,6 +63,10 @@ test('link seeder creates sample links with varied states', function () {
     $link = new Link;
 
     expect($link->newQuery()->count())
+        ->toBe(15)
+        ->and(Platform::query()->exists())
+        ->toBeTrue()
+        ->and($link->newQuery()->whereNotNull('platform_id')->count())
         ->toBe(15)
         ->and($link->newQuery()->where('is_active', false)->exists())
         ->toBeTrue()
