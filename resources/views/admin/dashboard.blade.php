@@ -30,8 +30,14 @@
 
             <section class="rounded-md border border-zinc-800 bg-zinc-900/50 p-6">
                 <p class="text-sm leading-6 text-zinc-300">
-                    {{ __('The private link administration panel will live here.') }}
+                    {{ __('Manage public profiles and hidden links.') }}
                 </p>
+
+                <div class="mt-5">
+                    <a href="{{ route('admin.links.index') }}" class="inline-flex h-10 items-center justify-center rounded-md bg-cyan-300 px-4 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-300/70">
+                        {{ __('Open links') }}
+                    </a>
+                </div>
             </section>
         </main>
     </body>
