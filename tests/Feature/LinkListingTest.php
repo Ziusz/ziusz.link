@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\LinkVisibility;
 use App\Link;
 use Database\Seeders\LinkSeeder;
 
@@ -25,6 +26,7 @@ test('home lists active and listed links in sort order', function () {
 
     Link::factory()->create([
         'title' => 'Hidden Link',
+        'visibility' => LinkVisibility::Hidden,
         'is_listed' => false,
     ]);
 
@@ -63,7 +65,7 @@ test('link seeder creates sample links with varied states', function () {
         ->toBe(15)
         ->and($link->newQuery()->where('is_active', false)->exists())
         ->toBeTrue()
-        ->and($link->newQuery()->where('is_listed', false)->exists())
+        ->and($link->newQuery()->where('visibility', LinkVisibility::Hidden->value)->exists())
         ->toBeTrue()
         ->and($link->newQuery()->where('clicks_count', '>', 0)->exists())
         ->toBeTrue()
