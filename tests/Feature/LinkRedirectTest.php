@@ -20,9 +20,8 @@ test('active links redirect to their destination and record the click', function
         ->not->toBeNull();
 });
 
-test('unlisted links can still redirect', function () {
-    $link = Link::factory()->create([
-        'is_listed' => false,
+test('hidden links can still redirect', function () {
+    $link = Link::factory()->hidden()->create([
         'destination_url' => 'https://example.com/private',
     ]);
 
@@ -34,6 +33,15 @@ test('inactive links are not reachable', function () {
     $link = Link::factory()->create([
         'is_active' => false,
     ]);
+
+    $this->get(route('links.redirect', $link))
+        ->assertNotFound();
+
+    expect($link->refresh()->clicks_count)->toBe(0);
+});
+
+test('expired links are not reachable', function () {
+    $link = Link::factory()->hidden(now()->subMinute())->create();
 
     $this->get(route('links.redirect', $link))
         ->assertNotFound();

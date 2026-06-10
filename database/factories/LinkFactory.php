@@ -2,7 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Enums\LinkLifetime;
+use App\Enums\LinkVisibility;
 use App\Link;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -20,13 +23,27 @@ class LinkFactory extends Factory
     {
         return [
             'slug' => fake()->unique()->slug(),
+            'platform_id' => null,
             'destination_url' => fake()->url(),
             'title' => fake()->words(3, true),
             'description' => fake()->optional()->sentence(),
+            'logo_url' => null,
             'is_active' => true,
             'is_listed' => true,
+            'visibility' => LinkVisibility::Featured,
             'sort_order' => 0,
+            'expires_at' => null,
         ];
+    }
+
+    public function hidden(?DateTimeInterface $expiresAt = null): static
+    {
+        return $this->state(fn (): array => [
+            'slug' => Link::generateUniqueSlug(),
+            'is_listed' => false,
+            'visibility' => LinkVisibility::Hidden,
+            'expires_at' => $expiresAt ?? LinkLifetime::default()->expiresAt(),
+        ]);
     }
 
     public function sample(int $position): static
@@ -36,6 +53,9 @@ class LinkFactory extends Factory
         return $this->state(function () use ($position, $profiles): array {
             $profile = $profiles[fake()->unique()->randomElement(array_keys($profiles))];
             $handle = fake()->unique()->userName();
+            $visibility = in_array($position, [14, 15], true) || fake()->boolean(12)
+                ? LinkVisibility::Hidden
+                : LinkVisibility::Featured;
             $clicksCount = $position === 1 || fake()->boolean(65)
                 ? fake()->numberBetween(1, 250)
                 : 0;
@@ -48,11 +68,15 @@ class LinkFactory extends Factory
                     ? null
                     : $profile['description'],
                 'is_active' => $position === 15 ? false : fake()->boolean(92),
-                'is_listed' => in_array($position, [14, 15], true) ? false : fake()->boolean(88),
+                'is_listed' => $visibility === LinkVisibility::Featured,
+                'visibility' => $visibility,
                 'sort_order' => $position * 10,
                 'clicks_count' => $clicksCount,
                 'last_clicked_at' => $clicksCount > 0
                     ? now()->subDays(fake()->numberBetween(0, 45))->subMinutes(fake()->numberBetween(1, 1440))
+                    : null,
+                'expires_at' => $visibility === LinkVisibility::Hidden && fake()->boolean(80)
+                    ? now()->addDays(fake()->randomElement([1, 3, 7, 14, 30, 90]))
                     : null,
             ];
         });

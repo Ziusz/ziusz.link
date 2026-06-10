@@ -9,7 +9,7 @@ class LinkRedirectController extends Controller
 {
     public function __invoke(Link $link): RedirectResponse
     {
-        abort_unless($link->is_active, 404);
+        abort_unless($link->isReachable(), 404);
 
         $link->increment('clicks_count', 1, [
             'last_clicked_at' => now(),

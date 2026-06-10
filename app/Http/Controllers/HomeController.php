@@ -10,8 +10,7 @@ class HomeController extends Controller
     public function __invoke(): View
     {
         $links = Link::query()
-            ->where('is_active', true)
-            ->where('is_listed', true)
+            ->featured()
             ->orderBy('sort_order')
             ->orderBy('title')
             ->get();

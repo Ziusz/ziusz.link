@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LinkController as AdminLinkController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LinkRedirectController;
 use App\Support\AdminAccess;
@@ -19,6 +20,13 @@ Route::post('/admin/logout', function (Request $request, AdminAccess $adminAcces
 
 Route::middleware('admin')->group(function (): void {
     Route::view('/admin', 'admin.dashboard')->name('admin.dashboard');
+    Route::get('/admin/links', [AdminLinkController::class, 'index'])->name('admin.links.index');
+    Route::get('/admin/links/create', [AdminLinkController::class, 'create'])->name('admin.links.create');
+    Route::post('/admin/links', [AdminLinkController::class, 'store'])->name('admin.links.store');
+    Route::get('/admin/links/{link}', [AdminLinkController::class, 'show'])->name('admin.links.show');
+    Route::get('/admin/links/{link}/edit', [AdminLinkController::class, 'edit'])->name('admin.links.edit');
+    Route::put('/admin/links/{link}', [AdminLinkController::class, 'update'])->name('admin.links.update');
+    Route::delete('/admin/links/{link}', [AdminLinkController::class, 'destroy'])->name('admin.links.destroy');
 });
 
 Route::get('/{link:slug}', LinkRedirectController::class)->name('links.redirect');
