@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\LinkLifetime;
 use App\Enums\LinkVisibility;
 use App\Link;
 use DateTimeInterface;
@@ -39,7 +40,7 @@ class LinkFactory extends Factory
             'slug' => Link::generateUniqueSlug(),
             'is_listed' => false,
             'visibility' => LinkVisibility::Hidden,
-            'expires_at' => $expiresAt ?? now()->addDays(14),
+            'expires_at' => $expiresAt ?? LinkLifetime::default()->expiresAt(),
         ]);
     }
 
