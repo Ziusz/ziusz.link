@@ -7,15 +7,18 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use RuntimeException;
 
 #[Fillable([
     'slug',
+    'platform_id',
     'destination_url',
     'title',
     'description',
+    'logo_url',
     'is_active',
     'is_listed',
     'visibility',
@@ -45,6 +48,16 @@ class Link extends Model
         $host = parse_url($this->destination_url, PHP_URL_HOST);
 
         return is_string($host) && $host !== '' ? $host : $this->destination_url;
+    }
+
+    public function platform(): BelongsTo
+    {
+        return $this->belongsTo(Platform::class);
+    }
+
+    public function resolvedLogoUrl(): ?string
+    {
+        return $this->logo_url ?: $this->platform?->logo_url;
     }
 
     public function scopeFeatured(Builder $query): Builder

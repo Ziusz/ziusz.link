@@ -23,9 +23,11 @@ class LinkFactory extends Factory
     {
         return [
             'slug' => fake()->unique()->slug(),
+            'platform_id' => null,
             'destination_url' => fake()->url(),
             'title' => fake()->words(3, true),
             'description' => fake()->optional()->sentence(),
+            'logo_url' => null,
             'is_active' => true,
             'is_listed' => true,
             'visibility' => LinkVisibility::Featured,
