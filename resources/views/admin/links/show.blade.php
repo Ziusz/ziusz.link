@@ -16,9 +16,15 @@
                     </h1>
                 </div>
 
-                <a href="{{ route('admin.links.index') }}" class="inline-flex h-10 items-center justify-center rounded-md border border-zinc-700 px-4 text-sm font-medium text-zinc-200 transition hover:border-zinc-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-zinc-500/40">
-                    {{ __('Back to links') }}
-                </a>
+                <div class="flex flex-wrap items-center gap-3">
+                    <a href="{{ route('admin.links.edit', $link) }}" class="inline-flex h-10 items-center justify-center rounded-md bg-cyan-300 px-4 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-300/70">
+                        {{ __('Edit') }}
+                    </a>
+
+                    <a href="{{ route('admin.links.index') }}" class="inline-flex h-10 items-center justify-center rounded-md border border-zinc-700 px-4 text-sm font-medium text-zinc-200 transition hover:border-zinc-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-zinc-500/40">
+                        {{ __('Back to links') }}
+                    </a>
+                </div>
             </header>
 
             <section class="grid gap-4 rounded-lg border border-zinc-800 bg-zinc-900/50 p-5 sm:grid-cols-2">

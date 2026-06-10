@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\LinkLifetime;
+use App\Enums\LinkVisibility;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\LinkRequest;
 use App\Link;
+use App\Platform;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -47,11 +52,48 @@ class LinkController extends Controller
         ]);
     }
 
+    public function create(): View
+    {
+        return view('admin.links.create', [
+            ...$this->formData(),
+            'link' => new Link([
+                'is_active' => true,
+                'visibility' => LinkVisibility::Hidden,
+            ]),
+        ]);
+    }
+
+    public function store(LinkRequest $request): RedirectResponse
+    {
+        $link = Link::create($request->linkAttributes());
+
+        return redirect()
+            ->route('admin.links.show', $link)
+            ->with('status', __('Link created.'));
+    }
+
     public function show(Link $link): View
     {
         return view('admin.links.show', [
             'link' => $link->load('platform'),
         ]);
+    }
+
+    public function edit(Link $link): View
+    {
+        return view('admin.links.edit', [
+            ...$this->formData(),
+            'link' => $link->load('platform'),
+        ]);
+    }
+
+    public function update(LinkRequest $request, Link $link): RedirectResponse
+    {
+        $link->update($request->linkAttributes());
+
+        return redirect()
+            ->route('admin.links.show', $link)
+            ->with('status', __('Link updated.'));
     }
 
     public function destroy(Link $link): RedirectResponse
@@ -90,5 +132,20 @@ class LinkController extends Controller
         }
 
         $query->orderBy(self::SORT_COLUMNS[$sort], $direction);
+    }
+
+    /**
+     * @return array{lifetimes: array<string, string>, platforms: Collection<int, Platform>, visibilities: array<string, string>}
+     */
+    private function formData(): array
+    {
+        return [
+            'lifetimes' => LinkLifetime::options(),
+            'platforms' => Platform::query()->orderBy('name')->get(),
+            'visibilities' => [
+                LinkVisibility::Featured->value => __('Featured on homepage'),
+                LinkVisibility::Hidden->value => __('Hidden short link'),
+            ],
+        ];
     }
 }

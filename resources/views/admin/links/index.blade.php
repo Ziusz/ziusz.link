@@ -27,6 +27,10 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3">
+                    <a href="{{ route('admin.links.create') }}" class="inline-flex h-10 items-center justify-center rounded-md bg-cyan-300 px-4 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-300/70">
+                        {{ __('New link') }}
+                    </a>
+
                     <a href="{{ route('admin.dashboard') }}" class="inline-flex h-10 items-center justify-center rounded-md border border-zinc-700 px-4 text-sm font-medium text-zinc-200 transition hover:border-zinc-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-zinc-500/40">
                         {{ __('Dashboard') }}
                     </a>
@@ -90,6 +94,10 @@
                                         <div class="flex justify-end gap-2">
                                             <a href="{{ route('admin.links.show', $link) }}" class="rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-200 transition hover:border-zinc-500 hover:text-white">
                                                 {{ __('Details') }}
+                                            </a>
+
+                                            <a href="{{ route('admin.links.edit', $link) }}" class="rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-200 transition hover:border-zinc-500 hover:text-white">
+                                                {{ __('Edit') }}
                                             </a>
 
                                             <form method="POST" action="{{ route('admin.links.destroy', $link) }}">
