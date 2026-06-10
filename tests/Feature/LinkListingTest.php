@@ -6,6 +6,8 @@ use App\Enums\LinkVisibility;
 use App\Link;
 use App\Platform;
 use Database\Seeders\LinkSeeder;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 
 test('home lists active and listed links in sort order', function () {
     $second = Link::factory()->create([
@@ -58,24 +60,36 @@ test('home shows an empty state when no links are published', function () {
 });
 
 test('link seeder creates sample links with varied states', function () {
-    $this->seed(LinkSeeder::class);
+    $this->app->usePublicPath(storage_path('framework/testing/public'));
 
-    $link = new Link;
+    Http::fake([
+        'cdn.simpleicons.org/*' => Http::response('<svg viewBox="0 0 1 1"></svg>', 200),
+    ]);
 
-    expect($link->newQuery()->count())
-        ->toBe(15)
-        ->and(Platform::query()->exists())
-        ->toBeTrue()
-        ->and($link->newQuery()->whereNotNull('platform_id')->count())
-        ->toBe(15)
-        ->and($link->newQuery()->where('is_active', false)->exists())
-        ->toBeTrue()
-        ->and($link->newQuery()->where('visibility', LinkVisibility::Hidden->value)->exists())
-        ->toBeTrue()
-        ->and($link->newQuery()->where('clicks_count', '>', 0)->exists())
-        ->toBeTrue()
-        ->and($link->newQuery()->whereNull('description')->exists())
-        ->toBeTrue()
-        ->and($link->newQuery()->whereNotNull('last_clicked_at')->exists())
-        ->toBeTrue();
+    try {
+        $this->seed(LinkSeeder::class);
+
+        $link = new Link;
+
+        expect($link->newQuery()->count())
+            ->toBe(15)
+            ->and(Platform::query()->exists())
+            ->toBeTrue()
+            ->and($link->newQuery()->whereNotNull('platform_id')->count())
+            ->toBe(15)
+            ->and($link->newQuery()->where('is_active', false)->exists())
+            ->toBeTrue()
+            ->and($link->newQuery()->where('visibility', LinkVisibility::Hidden->value)->exists())
+            ->toBeTrue()
+            ->and($link->newQuery()->where('clicks_count', '>', 0)->exists())
+            ->toBeTrue()
+            ->and($link->newQuery()->whereNull('description')->exists())
+            ->toBeTrue()
+            ->and($link->newQuery()->whereNotNull('last_clicked_at')->exists())
+            ->toBeTrue();
+    } finally {
+        File::deleteDirectory(public_path('platform-logos'));
+
+        $this->app->usePublicPath(base_path('public'));
+    }
 });
