@@ -12,7 +12,7 @@ class PlatformSeeder extends Seeder
 
     public function run(): void
     {
-        foreach ($this->platforms() as $platform) {
+        foreach (self::platforms() as $platform) {
             $platform['logo_url'] = $this->storedLogoPath(
                 $platform['slug'],
                 $platform['logo_source_url'],
@@ -30,7 +30,7 @@ class PlatformSeeder extends Seeder
     /**
      * @return array<int, array{slug: string, name: string, domain: string|null, logo_source_url: string|null}>
      */
-    private function platforms(): array
+    public static function platforms(): array
     {
         return [
             ['slug' => 'github', 'name' => 'GitHub', 'domain' => 'github.com', 'logo_source_url' => 'https://cdn.simpleicons.org/github'],
