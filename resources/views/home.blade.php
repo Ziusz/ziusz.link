@@ -23,10 +23,20 @@
 
             <section class="grid gap-3">
                 @forelse ($links as $link)
+                    @php
+                        $logoUrl = $link->resolvedLogoUrl();
+                    @endphp
+
                     <a href="{{ route('links.redirect', $link) }}" class="group rounded-lg border border-white/10 bg-white/[0.03] p-4 transition hover:border-cyan-300/60 hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-cyan-300/70">
                         <span class="flex items-start gap-4">
-                            <span class="flex size-11 shrink-0 items-center justify-center rounded-md bg-cyan-300 text-sm font-bold text-zinc-950">
-                                {{ Illuminate\Support\Str::of($link->title ?: $link->slug)->substr(0, 1)->upper() }}
+                            <span class="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-white p-2 shadow-sm shadow-black/20">
+                                @if (filled($logoUrl))
+                                    <img src="{{ $logoUrl }}" alt="{{ $link->platform?->name ?: $link->title ?: $link->slug }}" class="size-full object-contain" loading="lazy">
+                                @else
+                                    <span class="flex size-full items-center justify-center rounded-md bg-cyan-300 text-sm font-bold text-zinc-950">
+                                        {{ Illuminate\Support\Str::of($link->title ?: $link->slug)->substr(0, 1)->upper() }}
+                                    </span>
+                                @endif
                             </span>
 
                             <span class="grid min-w-0 flex-1 gap-2">

@@ -10,6 +10,7 @@ class HomeController extends Controller
     public function __invoke(): View
     {
         $links = Link::query()
+            ->with('platform')
             ->featured()
             ->orderBy('sort_order')
             ->orderBy('title')
