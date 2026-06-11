@@ -1,6 +1,7 @@
 <?php
 
 use App\Platform;
+use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\PlatformSeeder;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
@@ -40,4 +41,21 @@ test('platform seeder stores remote logos locally', function () {
     Http::assertSentCount(19);
     Http::assertSent(fn (Request $request): bool => $request->url() === 'https://cdn.simpleicons.org/github');
     Http::assertSent(fn (Request $request): bool => $request->url() === 'https://upload.wikimedia.org/wikipedia/commons/8/81/LinkedIn_icon.svg');
+});
+
+test('database seeder does not refresh platform logos twice', function () {
+    Http::preventStrayRequests();
+    Storage::fake('public');
+
+    Http::fake([
+        'cdn.simpleicons.org/*' => Http::response('<svg viewBox="0 0 1 1"></svg>', 200, ['content-type' => 'image/svg+xml']),
+        'upload.wikimedia.org/*' => Http::response('<svg viewBox="0 0 1 1"></svg>', 200, ['content-type' => 'image/svg+xml']),
+    ]);
+
+    $this->seed(DatabaseSeeder::class);
+
+    expect(Platform::query()->count())
+        ->toBe(20);
+
+    Http::assertSentCount(19);
 });

@@ -35,9 +35,21 @@ class LinkSeeder extends Seeder
      */
     private function platforms(): Collection
     {
-        $this->call(PlatformSeeder::class);
+        if ($this->missingSeededPlatforms()) {
+            $this->call(PlatformSeeder::class);
+        }
 
         return Platform::query()->get();
+    }
+
+    private function missingSeededPlatforms(): bool
+    {
+        $platformSlugs = array_column(PlatformSeeder::platforms(), 'slug');
+
+        return Platform::query()
+            ->whereIn('slug', $platformSlugs)
+            ->distinct()
+            ->count('slug') < count($platformSlugs);
     }
 
     private function destinationUrl(Platform $platform): string
