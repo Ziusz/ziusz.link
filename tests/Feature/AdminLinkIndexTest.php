@@ -19,7 +19,7 @@ test('authenticated admins can list non deleted links', function () {
     $adminAccess = app(AdminAccess::class);
     $platform = Platform::factory()->create([
         'name' => 'GitHub',
-        'logo_url' => 'https://cdn.example.com/github.svg',
+        'logo_url' => 'platform-logos/github.svg',
     ]);
 
     $first = Link::factory()->for($platform)->create([
@@ -46,7 +46,7 @@ test('authenticated admins can list non deleted links', function () {
         ->assertSeeText('Alpha')
         ->assertSeeText('Beta')
         ->assertSeeText('GitHub')
-        ->assertSee('src="https://cdn.example.com/github.svg"', false)
+        ->assertSee('src="'.route('logos.platforms.show', $platform).'"', false)
         ->assertSee(route('admin.links.show', $first), false)
         ->assertSee(route('admin.links.destroy', $second), false)
         ->assertDontSeeText('Deleted Link');
@@ -74,7 +74,7 @@ test('authenticated admins can view link details', function () {
     $adminAccess = app(AdminAccess::class);
     $platform = Platform::factory()->create([
         'name' => 'GitHub',
-        'logo_url' => 'https://cdn.example.com/github.svg',
+        'logo_url' => 'platform-logos/github.svg',
     ]);
 
     $link = Link::factory()->for($platform)->create([
@@ -91,7 +91,7 @@ test('authenticated admins can view link details', function () {
         ->assertSeeText('Profile')
         ->assertSeeText('https://github.com/ziusz')
         ->assertSeeText('GitHub')
-        ->assertSeeText('https://cdn.example.com/github.svg')
+        ->assertSeeText(route('logos.platforms.show', $platform))
         ->assertSeeText('Code and projects.')
         ->assertSeeText('12');
 });

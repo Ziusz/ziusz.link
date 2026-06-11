@@ -34,7 +34,7 @@ test('links may belong to a platform', function () {
 
 test('links resolve custom logos before platform logos', function () {
     $platform = Platform::factory()->create([
-        'logo_url' => 'https://cdn.example.com/platform.svg',
+        'logo_url' => 'platform-logos/platform.svg',
     ]);
 
     $platformLink = Link::factory()->create([
@@ -44,11 +44,11 @@ test('links resolve custom logos before platform logos', function () {
 
     $customLink = Link::factory()->create([
         'platform_id' => $platform->id,
-        'logo_url' => 'https://cdn.example.com/custom.svg',
+        'logo_url' => 'link-logos/custom.svg',
     ]);
 
     expect($platformLink->refresh()->resolvedLogoUrl())
-        ->toBe('https://cdn.example.com/platform.svg')
+        ->toBe(route('logos.platforms.show', $platform))
         ->and($customLink->refresh()->resolvedLogoUrl())
-        ->toBe('https://cdn.example.com/custom.svg');
+        ->toBe(route('logos.links.show', $customLink));
 });

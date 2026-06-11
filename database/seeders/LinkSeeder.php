@@ -35,9 +35,7 @@ class LinkSeeder extends Seeder
      */
     private function platforms(): Collection
     {
-        if (Platform::query()->doesntExist()) {
-            $this->call(PlatformSeeder::class);
-        }
+        $this->call(PlatformSeeder::class);
 
         return Platform::query()->get();
     }

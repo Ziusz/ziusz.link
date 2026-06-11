@@ -21,7 +21,7 @@ class PlatformFactory extends Factory
             'slug' => fake()->unique()->slug(2),
             'name' => fake()->words(2, true),
             'domain' => fake()->domainName(),
-            'logo_url' => fake()->imageUrl(width: 128, height: 128),
+            'logo_url' => null,
         ];
     }
 }
