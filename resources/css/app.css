@@ -23,16 +23,16 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
+    --color-accent: var(--color-blue-500);
+    --color-accent-content: var(--color-blue-600);
     --color-accent-foreground: var(--color-white);
 }
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
+        --color-accent: var(--color-blue-500);
+        --color-accent-content: var(--color-blue-400);
+        --color-accent-foreground: var(--color-white);
     }
 }
 
@@ -44,6 +44,17 @@
     ::backdrop,
     ::file-selector-button {
         border-color: var(--color-gray-200, currentColor);
+    }
+
+    input[type='number'] {
+        appearance: textfield;
+        -moz-appearance: textfield;
+    }
+
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+        margin: 0;
+        -webkit-appearance: none;
     }
 }
 

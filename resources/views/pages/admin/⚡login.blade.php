@@ -78,12 +78,12 @@ new #[Layout('layouts::app')] #[Title('Admin login')] class extends Component
     <main class="w-full max-w-md">
         <div class="mb-8">
             <div class="mb-5 flex items-center gap-3">
-                <div class="flex size-10 items-center justify-center rounded-md bg-cyan-600 text-sm font-bold text-white">
+                <div class="flex size-10 items-center justify-center rounded-md bg-accent text-sm font-bold text-accent-foreground">
                     ZL
                 </div>
 
                 <div>
-                    <p class="text-sm font-medium text-cyan-300">{{ config('app.name', 'Ziusz Link') }}</p>
+                    <p class="text-sm font-medium text-blue-300">{{ config('app.name', 'Ziusz Link') }}</p>
                     <h1 class="text-2xl font-semibold text-white">{{ __('Admin login') }}</h1>
                 </div>
             </div>
@@ -110,7 +110,7 @@ new #[Layout('layouts::app')] #[Title('Admin login')] class extends Component
                     autocomplete="current-password"
                     autofocus
                     @disabled(! $this->isConfigured())
-                    class="block h-11 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 text-base text-white outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+                    class="block h-11 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 text-base text-white outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-60"
                 >
 
                 @error('password')
@@ -121,7 +121,7 @@ new #[Layout('layouts::app')] #[Title('Admin login')] class extends Component
             <button
                 type="submit"
                 @disabled(! $this->isConfigured())
-                class="inline-flex h-11 w-full items-center justify-center rounded-md bg-cyan-600 px-4 text-sm font-semibold text-white transition hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
+                class="inline-flex h-11 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-accent-foreground transition hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
             >
                 <span wire:loading.remove wire:target="unlock">{{ __('Unlock') }}</span>
                 <span wire:loading wire:target="unlock">{{ __('Checking') }}</span>

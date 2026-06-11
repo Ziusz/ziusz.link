@@ -17,7 +17,10 @@ test('guest admins are redirected away from the links index', function () {
 
 test('authenticated admins can list non deleted links', function () {
     $adminAccess = app(AdminAccess::class);
-    $platform = Platform::factory()->create(['name' => 'GitHub']);
+    $platform = Platform::factory()->create([
+        'name' => 'GitHub',
+        'logo_url' => 'https://cdn.example.com/github.svg',
+    ]);
 
     $first = Link::factory()->for($platform)->create([
         'title' => 'Alpha',
@@ -43,6 +46,7 @@ test('authenticated admins can list non deleted links', function () {
         ->assertSeeText('Alpha')
         ->assertSeeText('Beta')
         ->assertSeeText('GitHub')
+        ->assertSee('src="https://cdn.example.com/github.svg"', false)
         ->assertSee(route('admin.links.show', $first), false)
         ->assertSee(route('admin.links.destroy', $second), false)
         ->assertDontSeeText('Deleted Link');
