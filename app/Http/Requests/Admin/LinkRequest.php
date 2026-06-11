@@ -37,6 +37,7 @@ class LinkRequest extends FormRequest
             'destination_url' => ['required', 'url', 'max:2048'],
             'is_active' => ['nullable', 'boolean'],
             'lifetime' => ['nullable', Rule::in($this->enumValues(LinkLifetime::cases()))],
+            'logo_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
             'logo_url' => ['nullable', 'string', 'max:2048'],
             'platform_id' => ['nullable', 'integer', 'exists:platforms,id'],
             'slug' => ['nullable', 'alpha_dash', 'max:128', Rule::unique('links', 'slug')->ignore($ignoreId)],
@@ -104,8 +105,14 @@ class LinkRequest extends FormRequest
 
     private function storedLogoPath(?string $logoUrl, string $slug): ?string
     {
+        if ($this->hasFile('logo_file')) {
+            return app(LogoStore::class)->storeUploaded('link-logos', $slug, $this->file('logo_file'));
+        }
+
         if (blank($logoUrl)) {
-            return null;
+            $link = $this->route('link');
+
+            return $link instanceof Link ? $link->logo_url : null;
         }
 
         if (LogoStore::isStoredPath($logoUrl)) {

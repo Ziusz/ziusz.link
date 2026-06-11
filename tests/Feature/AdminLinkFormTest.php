@@ -5,6 +5,7 @@ use App\Enums\LinkVisibility;
 use App\Link;
 use App\Platform;
 use App\Support\AdminAccess;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -28,7 +29,9 @@ test('authenticated admins can render the create form', function () {
         ->assertSeeText('New link')
         ->assertSeeText('GitHub')
         ->assertSeeText('14 days')
-        ->assertSeeText('Permanent');
+        ->assertSeeText('Permanent')
+        ->assertSee('enctype="multipart/form-data"', false)
+        ->assertSee('name="logo_file"', false);
 });
 
 test('authenticated admins can create a hidden temporary link with generated slug', function () {
@@ -155,4 +158,39 @@ test('authenticated admins can update links', function () {
         ->toBe(25);
 
     Storage::disk('public')->assertExists('link-logos/youtube.svg');
+});
+
+test('authenticated admins can upload a replacement logo when updating links', function () {
+    $adminAccess = app(AdminAccess::class);
+    $link = Link::factory()->create([
+        'slug' => 'profile',
+        'title' => 'Profile',
+        'logo_url' => 'link-logos/profile.svg',
+    ]);
+    Storage::fake('public');
+    $logo = UploadedFile::fake()->createWithContent(
+        'replacement.png',
+        base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII='),
+    );
+
+    $response = $this->withSession([$adminAccess->sessionKey() => true])
+        ->put(route('admin.links.update', $link), [
+            'description' => 'Updated profile.',
+            'destination_url' => 'https://example.com/profile',
+            'is_active' => '1',
+            'lifetime' => LinkLifetime::Permanent->value,
+            'logo_file' => $logo,
+            'logo_url' => '',
+            'slug' => 'profile',
+            'sort_order' => '5',
+            'title' => 'Profile',
+            'visibility' => LinkVisibility::Featured->value,
+        ]);
+
+    $response->assertRedirect(route('admin.links.show', $link->refresh()));
+
+    expect($link->refresh()->logo_url)
+        ->toBe('link-logos/profile.png');
+
+    Storage::disk('public')->assertExists('link-logos/profile.png');
 });
