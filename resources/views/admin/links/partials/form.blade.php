@@ -1,6 +1,10 @@
 @php
     $selectedVisibility = old('visibility', $link->visibility?->value ?? App\Enums\LinkVisibility::Hidden->value);
     $selectedLifetime = old('lifetime', $link->isHidden() && $link->expires_at === null ? App\Enums\LinkLifetime::Permanent->value : App\Enums\LinkLifetime::default()->value);
+    $logoName = $link->title ?: $link->slug ?: config('app.name', 'Ziusz Link');
+    $logoUrl = $link->resolvedLogoUrl();
+    $logoInputId = 'logo_file_'.($link->exists ? $link->getKey() : 'new');
+    $logoRemoteValue = old('logo_url', App\Support\LogoStore::isStoredPath($link->logo_url) ? '' : $link->logo_url);
     $fieldClass = 'group grid gap-2 rounded-md border border-zinc-800 bg-zinc-950/60 p-3 transition focus-within:border-blue-500/70 focus-within:bg-zinc-950 focus-within:ring-2 focus-within:ring-blue-500/15';
     $labelClass = 'text-xs font-medium uppercase text-zinc-500 transition group-focus-within:text-blue-300';
     $inputClass = 'h-9 w-full rounded-md border-0 bg-transparent p-0 text-sm text-white outline-none placeholder:text-zinc-600 focus:ring-0';
@@ -8,7 +12,7 @@
     $textareaClass = 'min-h-28 w-full resize-y rounded-md border-0 bg-transparent p-0 text-sm leading-6 text-white outline-none placeholder:text-zinc-600 focus:ring-0';
 @endphp
 
-<form method="POST" action="{{ $action }}" class="overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/70 shadow-2xl shadow-black/10 ring-1 ring-white/5">
+<form method="POST" action="{{ $action }}" enctype="multipart/form-data" class="overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/70 shadow-2xl shadow-black/10 ring-1 ring-white/5">
     @csrf
 
     @if ($method !== 'POST')
@@ -50,6 +54,21 @@
             <h2 class="text-sm font-semibold text-white">{{ __('Presentation') }}</h2>
 
             <div class="grid gap-4 sm:grid-cols-2">
+                <div class="flex items-start gap-4 rounded-md border border-zinc-800 bg-zinc-950/60 p-3 sm:col-span-2">
+                    <x-link-logo :name="$logoName" :url="$logoUrl" size="xl" upload :input-id="$logoInputId">
+                        <input id="{{ $logoInputId }}" name="logo_file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="sr-only">
+                    </x-link-logo>
+
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-semibold text-white">{{ __('Logo') }}</p>
+                        <p class="mt-1 text-sm leading-6 text-zinc-400">{{ __('Click the logo to choose an uploaded replacement, or paste a remote logo URL below.') }}</p>
+
+                        @error('logo_file')
+                            <p class="mt-2 text-sm text-red-300">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
                 <label class="{{ $fieldClass }}">
                     <span class="{{ $labelClass }}">{{ __('Title') }}</span>
                     <input name="title" value="{{ old('title', $link->title) }}" class="{{ $inputClass }}">
@@ -74,8 +93,8 @@
                 </label>
 
                 <label class="{{ $fieldClass }} sm:col-span-2">
-                    <span class="{{ $labelClass }}">{{ __('Logo override URL') }}</span>
-                    <input name="logo_url" value="{{ old('logo_url', $link->logo_url) }}" class="{{ $inputClass }}">
+                    <span class="{{ $labelClass }}">{{ __('Remote logo URL') }}</span>
+                    <input name="logo_url" value="{{ $logoRemoteValue }}" class="{{ $inputClass }}">
                     @error('logo_url')
                         <span class="text-sm text-red-300">{{ $message }}</span>
                     @enderror

@@ -91,7 +91,7 @@ test('authenticated admins can view link details', function () {
         ->assertSeeText('Profile')
         ->assertSeeText('https://github.com/ziusz')
         ->assertSeeText('GitHub')
-        ->assertSeeText(route('logos.platforms.show', $platform))
+        ->assertSee('src="'.route('logos.platforms.show', $platform).'"', false)
         ->assertSeeText('Code and projects.')
         ->assertSeeText('12');
 });
