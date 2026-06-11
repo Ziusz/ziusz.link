@@ -3,12 +3,15 @@
 use App\Http\Controllers\Admin\LinkController as AdminLinkController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LinkRedirectController;
+use App\Http\Controllers\LogoController;
 use App\Support\AdminAccess;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/logos/platforms/{platform}', [LogoController::class, 'platform'])->name('logos.platforms.show');
+Route::get('/logos/links/{link}', [LogoController::class, 'link'])->name('logos.links.show');
 
 Route::livewire('/admin/login', 'pages::admin.login')->name('admin.login');
 

@@ -6,6 +6,8 @@ use App\Link;
 use App\Platform;
 use App\Support\AdminAccess;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
     config(['admin.password_hash' => Hash::make('secret-password')]);
@@ -109,6 +111,10 @@ test('authenticated admins can update links', function () {
         'slug' => 'old-alias',
         'title' => 'Old title',
     ]);
+    Storage::fake('public');
+    Http::fake([
+        'cdn.example.com/*' => Http::response('<svg viewBox="0 0 1 1"></svg>', 200, ['content-type' => 'image/svg+xml']),
+    ]);
 
     $this->withSession([$adminAccess->sessionKey() => true])
         ->put(route('admin.links.update', $link), [
@@ -144,7 +150,9 @@ test('authenticated admins can update links', function () {
         ->and($link->expires_at)
         ->toBeNull()
         ->and($link->logo_url)
-        ->toBe('https://cdn.example.com/custom.svg')
+        ->toBe('link-logos/youtube.svg')
         ->and($link->sort_order)
         ->toBe(25);
+
+    Storage::disk('public')->assertExists('link-logos/youtube.svg');
 });

@@ -101,15 +101,7 @@
 
                         <div class="pointer-events-none relative z-10 grid gap-3 p-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                             <div class="flex min-w-0 items-center gap-3">
-                                <span class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-md border border-white/10 bg-white p-2 shadow-sm shadow-black/20">
-                                    @if (filled($logoUrl))
-                                        <img src="{{ $logoUrl }}" alt="" class="size-full object-contain" loading="lazy">
-                                    @else
-                                        <span class="flex size-full items-center justify-center rounded-sm bg-blue-500 text-sm font-bold text-white">
-                                            {{ Illuminate\Support\Str::of($name)->substr(0, 1)->upper() }}
-                                        </span>
-                                    @endif
-                                </span>
+                                <x-link-logo :name="$name" :url="$logoUrl" />
 
                                 <div class="min-w-0">
                                     <div class="flex min-w-0 flex-wrap items-center gap-2">

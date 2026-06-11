@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Enums\LinkVisibility;
+use App\Support\LogoStore;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -57,7 +58,14 @@ class Link extends Model
 
     public function resolvedLogoUrl(): ?string
     {
-        return $this->logo_url ?: $this->platform?->logo_url;
+        return $this->logoUrl() ?: $this->platform?->logoUrl();
+    }
+
+    public function logoUrl(): ?string
+    {
+        return LogoStore::isStoredPath($this->logo_url)
+            ? route('logos.links.show', $this)
+            : null;
     }
 
     public function scopeFeatured(Builder $query): Builder
