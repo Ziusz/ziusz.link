@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3">
-                    <a href="{{ route('admin.links.edit', $link) }}" class="inline-flex h-10 items-center justify-center rounded-md bg-cyan-300 px-4 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-300/70">
+                    <a href="{{ route('admin.links.edit', $link) }}" class="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-accent-foreground transition hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/60">
                         {{ __('Edit') }}
                     </a>
 
